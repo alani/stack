@@ -24,16 +24,15 @@ variable "cidr" {
 
 variable "default_ecs_ami" {
   default = {
-    us-east-1      = "ami-5f3ff932"
-    us-west-1      = "ami-31c08551"
-    us-west-2      = "ami-f3985d93"
-    eu-west-1      = "ami-ab4bd5d8"
-    eu-central-1   = "ami-6c58b103"
-    ap-northeast-1 = "ami-a69d68c7"
-    ap-northeast-2 = "ami-7b2de615"
-    ap-southeast-1 = "ami-550dde36"
-    ap-southeast-2 = "ami-c799b0a4"
-    sa-east-1      = "ami-0274fe6e"
+    us-east-1      = "ami-1924770e"
+    us-east-2      = "ami-bd3e64d8"
+    us-west-1      = "ami-7f004b1f"
+    us-west-2      = "ami-56ed4936"
+    eu-west-1      = "ami-c8337dbb"
+    eu-central-1   = "ami-dd12ebb2"
+    ap-northeast-1 = "ami-c8b016a9"
+    ap-southeast-1 = "ami-6d22840e"
+    ap-southeast-2 = "ami-73407d10"
   }
 }
 
@@ -41,6 +40,7 @@ variable "default_ecs_ami" {
 variable "default_log_account_ids" {
   default = {
     us-east-1      = "127311923021"
+    us-east-2      = "033677994240"
     us-west-2      = "797873946194"
     us-west-1      = "027434742980"
     eu-west-1      = "156460612806"

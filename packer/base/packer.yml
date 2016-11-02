@@ -1,11 +1,11 @@
 ---
 # https://www.packer.io/docs/builders/amazon-ebs.html
 ami:
-  source_ami: ami-fa82739a
-  instance_type: c4.2xlarge
+  source_ami: ami-40d28157
+  instance_type: t2.small
   ssh_username: ubuntu
   ssh_timeout: 10m
-  enhanced_networking: True
+  enhanced_networking: False
   associate_public_ip_address: True
 
 scripts:
