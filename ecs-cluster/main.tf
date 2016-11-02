@@ -91,6 +91,11 @@ variable "desired_capacity" {
   default     = 3
 }
 
+variable "wait_for_capacity_timeout" {
+  description = "Desired capacity to provision ASG"
+  default     = "10m"
+}
+
 variable "associate_public_ip_address" {
   description = "Should created instances be publicly accessible (if the SG allows)"
   default = false
@@ -198,13 +203,14 @@ resource "aws_launch_configuration" "main" {
 resource "aws_autoscaling_group" "main" {
   name = "${var.name}"
 
-  availability_zones   = ["${var.availability_zones}"]
-  vpc_zone_identifier  = ["${var.subnet_ids}"]
-  launch_configuration = "${aws_launch_configuration.main.id}"
-  min_size             = "${var.min_size}"
-  max_size             = "${var.max_size}"
-  desired_capacity     = "${var.desired_capacity}"
-  termination_policies = ["OldestLaunchConfiguration", "Default"]
+  availability_zones        = ["${var.availability_zones}"]
+  vpc_zone_identifier       = ["${var.subnet_ids}"]
+  launch_configuration      = "${aws_launch_configuration.main.id}"
+  min_size                  = "${var.min_size}"
+  max_size                  = "${var.max_size}"
+  desired_capacity          = "${var.desired_capacity}"
+  wait_for_capacity_timeout = "${var.wait_for_capacity_timeout}"
+  termination_policies      = ["OldestLaunchConfiguration", "Default"]
 
   tag {
     key                 = "Name"
