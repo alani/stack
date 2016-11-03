@@ -44,12 +44,12 @@ variable "allocated_storage" {
 
 variable "engine" {
   description = "The database engine"
-  defaults    = "postgres"
+  default    = "postgres"
 }
 
 variable "engine_version" {
   description = "The database engine version"
-  defaults    = "9.5.4"
+  default    = "9.5.4"
 }
 
 variable "username" {
