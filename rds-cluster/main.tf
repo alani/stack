@@ -15,7 +15,8 @@ variable "zone_id" {
 }
 
 variable "security_groups" {
-  description = "Comma separated list of security groups"
+  description = "A list of security group IDs"
+  type = "list"
 }
 
 variable "subnet_ids" {
