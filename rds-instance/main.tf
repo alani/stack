@@ -122,6 +122,7 @@ variable "skip_final_snapshot" {
 
 variable "alarm_actions" {
   type = "list"
+  default     = []
 }
 
 variable "alarm_cpu_threshold" {
