@@ -142,10 +142,6 @@ variable "alarm_free_memory_threshold" {
   default = "128000000"
 }
 
-variable "alarm_actions" {
-  type = "list"
-}
-
 #
 # RDS Instance Resources
 #
