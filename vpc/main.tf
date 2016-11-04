@@ -123,6 +123,8 @@ resource "aws_route_table" "internal" {
   tags {
     Name = "${var.name}-${format("internal-%03d", count.index+1)}"
   }
+
+  depends_on = ["aws_subnet.internal"]
 }
 
 resource "aws_route" "internal" {
