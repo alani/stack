@@ -1,4 +1,4 @@
-#cloud-config
+#cloud-boothook
 bootcmd:
   - echo 'SERVER_ENVIRONMENT=${environment}' | sudo tee --append /etc/environment
   - echo 'SERVER_GROUP=${name}' | sudo tee --append /etc/environment
