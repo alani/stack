@@ -331,6 +331,10 @@ output "endpoint" {
   value = "${aws_db_instance.main.endpoint}"
 }
 
+output "address" {
+  value = "${aws_db_instance.main.address}"
+}
+
 output "fqdn" {
   value = "${aws_route53_record.main.fqdn}"
 }
