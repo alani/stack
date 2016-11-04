@@ -10,7 +10,7 @@ apt-cache policy docker-engine
 
 apt-get install -o Dpkg::Options::="--force-confold" -y \
         linux-image-extra-$(uname -r) \
-        docker-engine
+        docker-engine=1.11.2-0~xenial
 
 gpasswd -a ubuntu docker
 

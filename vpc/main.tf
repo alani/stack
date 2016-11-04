@@ -54,11 +54,6 @@ resource "aws_internet_gateway" "main" {
   }
 }
 
-resource "aws_eip" "nat" {
-  count = "1"
-  vpc   = true
-}
-
 resource "aws_nat_gateway" "main" {
   count         = "1"
   allocation_id = "${aws_eip.nat.id}"
@@ -66,6 +61,10 @@ resource "aws_nat_gateway" "main" {
   depends_on    = ["aws_internet_gateway.main"]
 }
 
+resource "aws_eip" "nat" {
+  count = "1"
+  vpc   = true
+}
 
 /**
  * Subnets.
@@ -110,6 +109,11 @@ resource "aws_route" "external" {
   route_table_id         = "${aws_route_table.external.id}"
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = "${aws_internet_gateway.main.id}"
+
+  # A workaround for a series of eventual consistency bugs in Terraform. For a list of the errors, see the related
+  # bugs described in this issue: https://github.com/hashicorp/terraform/issues/8542. The workaround is based on:
+  # https://github.com/hashicorp/terraform/issues/5335 and https://charity.wtf/2016/04/14/scrapbag-of-useful-terraform-tips/
+  depends_on = ["aws_internet_gateway.main", "aws_route_table.external"]
 }
 
 resource "aws_route_table" "internal" {
@@ -126,6 +130,11 @@ resource "aws_route" "internal" {
   route_table_id         = "${element(aws_route_table.internal.*.id, count.index)}"
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = "${aws_nat_gateway.main.id}"
+
+  # A workaround for a series of eventual consistency bugs in Terraform. For a list of the errors, see the related
+  # bugs described in this issue: https://github.com/hashicorp/terraform/issues/8542. The workaround is based on:
+  # https://github.com/hashicorp/terraform/issues/5335 and https://charity.wtf/2016/04/14/scrapbag-of-useful-terraform-tips/
+  depends_on = ["aws_nat_gateway.main", "aws_route_table.internal"]
 }
 
 /**
