@@ -55,8 +55,10 @@ variable "default_log_account_ids" {
   }
 }
 
+// http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-private.html
+// http://serverfault.com/questions/662365/how-to-set-up-an-internal-domain-with-route53-on-aws
 output "domain_name_servers" {
-  value = "${cidrhost(var.cidr, 2)}"
+  value = "${cidrhost(var.cidr, 2)}, AmazonProvidedDNS"
 }
 
 output "ecs_ami" {
