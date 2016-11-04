@@ -1,10 +1,10 @@
-#cloud-boothook
+#cloud-config
 bootcmd:
-  - echo 'SERVER_ENVIRONMENT=${environment}' | sudo tee --append /etc/environment
-  - echo 'SERVER_GROUP=${name}' | sudo tee --append /etc/environment
-  - echo 'SERVER_REGION=${region}' | sudo tee --append /etc/environment
+  - echo 'SERVER_ENVIRONMENT=${environment}' >> /etc/environment
+  - echo 'SERVER_GROUP=${name}' >> /etc/environment
+  - echo 'SERVER_REGION=${region}' >> /etc/environment
 
   - mkdir -p /etc/ecs
-  - echo 'ECS_CLUSTER=${name}' | sudo tee --append /etc/ecs/ecs.config 
-  - echo 'ECS_ENGINE_AUTH_TYPE=${docker_auth_type}' | sudo tee --append /etc/ecs/ecs.config 
-  - echo 'ECS_ENGINE_AUTH_DATA=${docker_auth_data}' | sudo tee --append /etc/ecs/ecs.config 
+  - echo 'ECS_CLUSTER=${name}' >> /etc/ecs/ecs.config
+  - echo 'ECS_ENGINE_AUTH_TYPE=${docker_auth_type}' >> /etc/ecs/ecs.config
+  - echo 'ECS_ENGINE_AUTH_DATA=${docker_auth_data}' >> /etc/ecs/ecs.config
