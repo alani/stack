@@ -10,6 +10,7 @@ ami:
 
 scripts:
   - base.sh
+  - env.sh
   - ixgbevf.sh
   - bootstrap.sh
   - docker.sh
