@@ -173,9 +173,7 @@ data "template_file" "cloud_config" {
 resource "aws_launch_configuration" "main" {
   name_prefix = "${format("%s-", var.name)}"
 
-  image_id                    = <<EOF
-  {"https://index.docker.io/v1/":{"auth":"ZWxhYm9yYXRlOkh1Z2hrZ2IwMiFha2E=","email":"elaborateops@gmail.com"}}
-  EOF
+  image_id                    = "${var.image_id}"
   instance_type               = "${var.instance_type}"
   ebs_optimized               = "${var.instance_ebs_optimized}"
   iam_instance_profile        = "${var.iam_instance_profile}"
