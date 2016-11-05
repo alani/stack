@@ -1,4 +1,5 @@
 packer/base/scripts/env.sh
+packer/ecs/root/etc/ecs/ecs.config
 example/keys
 .terraform
 *.tfstate

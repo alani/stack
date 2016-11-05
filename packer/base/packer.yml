@@ -8,9 +8,9 @@ ami:
   enhanced_networking: False
   associate_public_ip_address: True
 
-scripts:
-  - base.sh
+scripts:  
   - env.sh
+  - base.sh
   - ixgbevf.sh
   - bootstrap.sh
   - docker.sh
