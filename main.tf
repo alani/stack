@@ -126,7 +126,7 @@ variable "ecs_security_groups" {
 
 variable "ecs_ami" {
   description = "The AMI that will be used to launch EC2 instances in the ECS cluster"
-  default     = "ami-0defc91a"
+  default     = "ami-77fed860"
 }
 
 module "defaults" {
