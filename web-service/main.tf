@@ -43,8 +43,9 @@ variable "security_groups" {
   description = "Comma separated list of security group IDs that will be passed to the ELB module"
 }
 
-variable "port" {
+variable "host_port" {
   description = "The container host port"
+  default     = 80
 }
 
 variable "cluster" {
@@ -53,10 +54,6 @@ variable "cluster" {
 
 variable "log_bucket" {
   description = "The S3 bucket ID to use for the ELB"
-}
-
-variable "ssl_certificate_id" {
-  description = "SSL Certificate ID to use"
 }
 
 variable "iam_role" {
@@ -71,10 +68,6 @@ variable "external_dns_name" {
 variable "internal_dns_name" {
   description = "The subdomain under which the ELB is exposed internally, defaults to the task name"
   default     = ""
-}
-
-variable "external_zone_id" {
-  description = "The zone ID to create the record in"
 }
 
 variable "internal_zone_id" {
@@ -92,7 +85,7 @@ variable "healthcheck" {
 
 variable "container_port" {
   description = "The container port"
-  default     = 3000
+  default     = 8080
 }
 
 variable "command" {
@@ -157,7 +150,7 @@ module "task" {
   [
     {
       "containerPort": ${var.container_port},
-      "hostPort": ${var.port}
+      "hostPort": ${var.host_port}
     }
   ]
 EOF
@@ -167,17 +160,15 @@ module "elb" {
   source = "./elb"
 
   name               = "${module.task.name}"
-  port               = "${var.port}"
+  port               = "${var.host_port}"
   environment        = "${var.environment}"
   subnet_ids         = "${var.subnet_ids}"
   external_dns_name  = "${coalesce(var.external_dns_name, module.task.name)}"
   internal_dns_name  = "${coalesce(var.internal_dns_name, module.task.name)}"
   healthcheck        = "${var.healthcheck}"
-  external_zone_id   = "${var.external_zone_id}"
   internal_zone_id   = "${var.internal_zone_id}"
   security_groups    = "${var.security_groups}"
   log_bucket         = "${var.log_bucket}"
-  ssl_certificate_id = "${var.ssl_certificate_id}"
 }
 
 /**

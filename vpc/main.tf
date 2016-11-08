@@ -169,6 +169,10 @@ output "external_subnets" {
   value = ["${aws_subnet.external.*.id}"]
 }
 
+output "external_subnets_list" {
+  value = "${join(",", aws_subnet.external.*.id)}"
+}
+
 // A list of subnet IDs.
 output "internal_subnets" {
   value = ["${aws_subnet.internal.*.id}"]

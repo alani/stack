@@ -248,6 +248,10 @@ output "external_subnets" {
   value = "${module.vpc.external_subnets}"
 }
 
+output "external_subnets_list" {
+  value = "${module.vpc.external_subnets_list}"
+}
+
 // ECS Service IAM role.
 output "iam_role" {
   value = "${module.iam_role.arn}"

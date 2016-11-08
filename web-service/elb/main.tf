@@ -40,20 +40,18 @@ variable "internal_dns_name" {
   description = "The subdomain under which the ELB is exposed internally, defaults to the task name"
 }
 
-variable "external_zone_id" {
-  description = "The zone ID to create the record in"
-}
 
 variable "internal_zone_id" {
   description = "The zone ID to create the record in"
 }
 
-variable "ssl_certificate_id" {
-}
-
 /**
  * Resources.
  */
+
+resource "aws_route53_zone" "main" {
+  name    = "${var.external_dns_name}"
+}
 
 resource "aws_elb" "main" {
   name = "${var.name}"
@@ -72,14 +70,6 @@ resource "aws_elb" "main" {
     lb_protocol       = "http"
     instance_port     = "${var.port}"
     instance_protocol = "http"
-  }
-
-  listener {
-    lb_port            = 443
-    lb_protocol        = "https"
-    instance_port      = "${var.port}"
-    instance_protocol  = "http"
-    ssl_certificate_id = "${var.ssl_certificate_id}"
   }
 
   health_check {
@@ -102,7 +92,7 @@ resource "aws_elb" "main" {
 }
 
 resource "aws_route53_record" "external" {
-  zone_id = "${var.external_zone_id}"
+  zone_id = "${aws_route53_zone.main.zone_id}"
   name    = "${var.external_dns_name}"
   type    = "A"
 
@@ -111,6 +101,10 @@ resource "aws_route53_record" "external" {
     name                   = "${aws_elb.main.dns_name}"
     evaluate_target_health = false
   }
+
+  # This is required in order to ensure A record is removed before 
+  # root DNS zone is removed
+  depends_on = ["aws_route53_zone.main"]
 }
 
 resource "aws_route53_record" "internal" {
