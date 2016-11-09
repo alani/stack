@@ -8,6 +8,10 @@ variable "name" {
   description = "ELB name, e.g cdn"
 }
 
+variable "vpc_id" {
+  description = "The VPC ID to use"
+}
+
 variable "subnet_ids" {
   description = "Comma separated list of subnet IDs"
 }
@@ -53,32 +57,11 @@ resource "aws_route53_zone" "main" {
   name    = "${var.external_dns_name}"
 }
 
-resource "aws_elb" "main" {
-  name = "${var.name}"
-
-  internal                  = false
-  cross_zone_load_balancing = true
-  subnets                   = ["${split(",", var.subnet_ids)}"]
-  security_groups           = ["${split(",",var.security_groups)}"]
-
-  idle_timeout                = 30
-  connection_draining         = true
-  connection_draining_timeout = 15
-
-  listener {
-    lb_port           = 80
-    lb_protocol       = "http"
-    instance_port     = "${var.port}"
-    instance_protocol = "http"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 5
-    target              = "HTTP:${var.port}${var.healthcheck}"
-    interval            = 30
-  }
+resource "aws_alb" "main" {
+  name            = "${var.name}-alb"
+  internal        = false
+  security_groups = ["${split(",",var.security_groups)}"]
+  subnets         = ["${split(",", var.subnet_ids)}"]
 
   access_logs {
     bucket = "${var.log_bucket}"
@@ -91,14 +74,46 @@ resource "aws_elb" "main" {
   }
 }
 
+resource "aws_alb_target_group" "main_http" {
+  name     = "${var.name}-http-alb-tg"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = "${var.vpc_id}"
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 5
+    interval            = 30
+    path                = "${var.healthcheck}"
+  }
+
+  tags {
+    Name        = "${var.name}-http-alb-tg"
+    Service     = "${var.name}"
+    Environment = "${var.environment}"
+  }
+}
+
+resource "aws_alb_listener" "main_http" {
+   load_balancer_arn = "${aws_alb.main.arn}"
+   port = "80"
+   protocol = "HTTP"
+
+   default_action {
+     target_group_arn = "${aws_alb_target_group.main_http.arn}"
+     type = "forward"
+   }
+}
+
 resource "aws_route53_record" "external" {
   zone_id = "${aws_route53_zone.main.zone_id}"
   name    = "${var.external_dns_name}"
   type    = "A"
 
   alias {
-    zone_id                = "${aws_elb.main.zone_id}"
-    name                   = "${aws_elb.main.dns_name}"
+    zone_id                = "${aws_alb.main.zone_id}"
+    name                   = "${aws_alb.main.dns_name}"
     evaluate_target_health = false
   }
 
@@ -107,35 +122,18 @@ resource "aws_route53_record" "external" {
   depends_on = ["aws_route53_zone.main"]
 }
 
-resource "aws_route53_record" "internal" {
-  zone_id = "${var.internal_zone_id}"
-  name    = "${var.internal_dns_name}"
-  type    = "A"
-
-  alias {
-    zone_id                = "${aws_elb.main.zone_id}"
-    name                   = "${aws_elb.main.dns_name}"
-    evaluate_target_health = false
-  }
-}
-
 /**
  * Outputs.
  */
 
-// The ELB name.
-output "name" {
-  value = "${aws_elb.main.name}"
-}
-
 // The ELB ID.
-output "id" {
-  value = "${aws_elb.main.id}"
+output "tg_arn" {
+  value = "${aws_alb_target_group.main_http.arn}"
 }
 
 // The ELB dns_name.
 output "dns" {
-  value = "${aws_elb.main.dns_name}"
+  value = "${aws_alb.main.dns_name}"
 }
 
 // FQDN built using the zone domain and name (external)
@@ -143,12 +141,7 @@ output "external_fqdn" {
   value = "${aws_route53_record.external.fqdn}"
 }
 
-// FQDN built using the zone domain and name (internal)
-output "internal_fqdn" {
-  value = "${aws_route53_record.internal.fqdn}"
-}
-
 // The zone id of the ELB
 output "zone_id" {
-  value = "${aws_elb.main.zone_id}"
+  value = "${aws_alb.main.zone_id}"
 }
