@@ -91,7 +91,7 @@ variable "ecs_min_size" {
 
 variable "ecs_max_size" {
   description = "the maximum number of instances to use in the default ecs cluster"
-  default     = 100
+  default     = 5
 }
 
 variable "ecs_desired_capacity" {
@@ -127,6 +127,11 @@ variable "ecs_security_groups" {
 variable "ecs_ami" {
   description = "The AMI that will be used to launch EC2 instances in the ECS cluster"
   default     = "ami-b3b096a4"
+}
+
+variable "alarm_actions" {
+  type = "list"
+  default     = []
 }
 
 module "defaults" {
@@ -204,6 +209,7 @@ module "ecs_cluster" {
   docker_auth_type       = "${var.ecs_docker_auth_type}"
   docker_auth_data       = "${var.ecs_docker_auth_data}"
   security_groups        = "${coalesce(var.ecs_security_groups, format("%s,%s,%s", module.security_groups.internal_ssh, module.security_groups.internal_elb, module.security_groups.external_elb))}"
+  alarm_actions          = ["${var.alarm_actions}"]
 }
 
 module "s3_logs" {

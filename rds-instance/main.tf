@@ -218,8 +218,8 @@ resource "aws_route53_record" "main" {
 #
 
 resource "aws_cloudwatch_metric_alarm" "database_cpu" {
-  alarm_name          = "alarm${var.name}DatabaseServerCPUUtilization"
-  alarm_description   = "Database server CPU utilization"
+  alarm_name          = "${var.name}-PostgreSQL-DatabaseServerCPUUtilization-High"
+  alarm_description   = "Alert if Database Server CPU Utilization > 75% for 5 minutes"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "1"
   metric_name         = "CPUUtilization"
@@ -240,8 +240,8 @@ resource "aws_cloudwatch_metric_alarm" "database_cpu" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "database_disk_queue" {
-  alarm_name          = "alarm${var.name}DatabaseServerDiskQueueDepth"
-  alarm_description   = "Database server disk queue depth"
+  alarm_name          = "${var.name}-PostgreSQL-DatabaseServerDiskQueueDepth-High"
+  alarm_description   = "Alert if Database Server Queue Depth > 10 for 1 minute"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "1"
   metric_name         = "DiskQueueDepth"
@@ -266,8 +266,8 @@ resource "aws_cloudwatch_metric_alarm" "database_disk_queue" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "database_disk_free" {
-  alarm_name          = "alarm${var.name}DatabaseServerFreeStorageSpace"
-  alarm_description   = "Database server free storage space"
+  alarm_name          = "${var.name}-PostgreSQL-DatabaseServerFreeStorageSpace-Low"
+  alarm_description   = "Alert if Database Server Free Storage Space < 10GB for 1 minute"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = "1"
   metric_name         = "FreeStorageSpace"
@@ -291,11 +291,11 @@ resource "aws_cloudwatch_metric_alarm" "database_disk_free" {
   depends_on = ["aws_cloudwatch_metric_alarm.database_disk_queue"]
 }
 
-// http://stackoverflow.com/questions/15332158/amazon-rds-running-out-of-freeable-memory-should-i-be-worried
+#// http://stackoverflow.com/questions/15332158/amazon-rds-running-out-of-freeable-memory-should-i-be-worried
 
 resource "aws_cloudwatch_metric_alarm" "database_memory_free" {
-  alarm_name          = "alarm${var.name}DatabaseServerFreeableMemory"
-  alarm_description   = "Database server freeable memory"
+  alarm_name          = "${var.name}-PostgreSQL-DatabaseServerFreeableMemory-Low"
+  alarm_description   = "Alert if Database Server Freeable Memory < 128MB for 1 minute"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = "1"
   metric_name         = "FreeableMemory"
