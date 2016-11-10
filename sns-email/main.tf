@@ -30,12 +30,16 @@ data "template_file" "cloudformation_sns_stack" {
 }
 
 resource "aws_cloudformation_stack" "sns-topic" {
-    name = "${var.name}-sns-topic"
+    name = "${var.name}"
     template_body = "${data.template_file.cloudformation_sns_stack.rendered}"
 
     tags {
-        Name        = "${var.name}-sns-topic"
+        Name        = "${var.name}"
         Environment = "${var.environment}"
+    }
+
+    lifecycle {
+        create_before_destroy = true
     }
 }
 
