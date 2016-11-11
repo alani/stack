@@ -88,6 +88,16 @@ variable "desired_count" {
   default     = 2
 }
 
+variable "deployment_minimum_healthy_percent" {
+  description = "Minimum percentage of healthy tasks to run"
+  default     = 50
+}
+
+variable "deployment_maximum_percent" {
+  description = "Maximum percentage of tasks to run"
+  default     = 100
+}
+
 variable "memory" {
   description = "The number of MiB of memory to reserve for the container"
   default     = 512
@@ -116,11 +126,14 @@ variable "zone_id" {
  */
 
 resource "aws_ecs_service" "main" {
-  name            = "${module.task.name}"
-  cluster         = "${var.cluster}"
-  task_definition = "${module.task.arn}"
-  desired_count   = "${var.desired_count}"
-  iam_role        = "${var.iam_role}"
+  name                                = "${module.task.name}"
+  cluster                             = "${var.cluster}"
+  task_definition                     = "${module.task.arn}"
+  desired_count                       = "${var.desired_count}"
+  deployment_minimum_healthy_percent  = "${var.deployment_minimum_healthy_percent}"
+  deployment_maximum_percent          = "${var.deployment_maximum_percent}"
+
+  iam_role                            = "${var.iam_role}"
 
   load_balancer {
     elb_name       = "${module.elb.id}"
