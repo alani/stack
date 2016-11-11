@@ -196,6 +196,11 @@ output "zone_id" {
   value = "${module.elb.zone_id}"
 }
 
+// Zone NS
+output "name_servers" {
+  value = "${module.elb.name_servers}"
+}
+
 // FQDN built using the zone domain and name (external)
 output "external_fqdn" {
   value = "${module.elb.external_fqdn}"

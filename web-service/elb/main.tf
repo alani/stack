@@ -59,6 +59,12 @@ variable "tls_certificate_arn" {
 
 resource "aws_route53_zone" "main" {
   name    = "${var.external_dns_name}"
+
+  tags {
+    Name        = "${var.name}-dns-zone"
+    Service     = "${var.name}"
+    Environment = "${var.environment}"
+  }
 }
 
 resource "aws_alb" "main" {
@@ -151,6 +157,11 @@ output "tg_arn" {
 // The ELB dns_name.
 output "dns" {
   value = "${aws_alb.main.dns_name}"
+}
+
+// Zone NS
+output "name_servers" {
+  value = "${aws_route53_zone.main.name_servers}"
 }
 
 // FQDN built using the zone domain and name (external)
