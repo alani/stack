@@ -77,6 +77,10 @@ variable "internal_zone_id" {
   description = "The zone ID to create the record in"
 }
 
+variable "tls_certificate_arn" {
+  description = "TLS Certificate ARN"
+}
+
 /**
  * Options.
  */
@@ -174,6 +178,7 @@ module "elb" {
   internal_zone_id    = "${var.internal_zone_id}"
   security_groups     = "${var.security_groups}"
   log_bucket          = "${var.log_bucket}"
+  tls_certificate_arn = "${var.tls_certificate_arn}"
 }
 
 /**

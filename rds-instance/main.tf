@@ -218,7 +218,7 @@ resource "aws_route53_record" "main" {
 #
 
 resource "aws_cloudwatch_metric_alarm" "database_cpu" {
-  alarm_name          = "${var.name}-PostgreSQL-DatabaseServerCPUUtilization-High"
+  alarm_name          = "${var.name}-${var.environment}-PostgreSQL-DatabaseServerCPUUtilization-High"
   alarm_description   = "Alert if Database Server CPU Utilization > 75% for 5 minutes"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "1"
@@ -240,7 +240,7 @@ resource "aws_cloudwatch_metric_alarm" "database_cpu" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "database_disk_queue" {
-  alarm_name          = "${var.name}-PostgreSQL-DatabaseServerDiskQueueDepth-High"
+  alarm_name          = "${var.name}-${var.environment}-PostgreSQL-DatabaseServerDiskQueueDepth-High"
   alarm_description   = "Alert if Database Server Queue Depth > 10 for 1 minute"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "1"
@@ -266,7 +266,7 @@ resource "aws_cloudwatch_metric_alarm" "database_disk_queue" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "database_disk_free" {
-  alarm_name          = "${var.name}-PostgreSQL-DatabaseServerFreeStorageSpace-Low"
+  alarm_name          = "${var.name}-${var.environment}-PostgreSQL-DatabaseServerFreeStorageSpace-Low"
   alarm_description   = "Alert if Database Server Free Storage Space < 10GB for 1 minute"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = "1"
@@ -294,7 +294,7 @@ resource "aws_cloudwatch_metric_alarm" "database_disk_free" {
 #// http://stackoverflow.com/questions/15332158/amazon-rds-running-out-of-freeable-memory-should-i-be-worried
 
 resource "aws_cloudwatch_metric_alarm" "database_memory_free" {
-  alarm_name          = "${var.name}-PostgreSQL-DatabaseServerFreeableMemory-Low"
+  alarm_name          = "${var.name}-${var.environment}-PostgreSQL-DatabaseServerFreeableMemory-Low"
   alarm_description   = "Alert if Database Server Freeable Memory < 128MB for 1 minute"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = "1"

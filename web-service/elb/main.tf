@@ -49,6 +49,10 @@ variable "internal_zone_id" {
   description = "The zone ID to create the record in"
 }
 
+variable "tls_certificate_arn" {
+  description = "TLS Certificate ARN"
+}
+
 /**
  * Resources.
  */
@@ -89,7 +93,7 @@ resource "aws_alb_target_group" "main_http" {
   }
 
   tags {
-    Name        = "${var.name}-http-alb-tg"
+    Name        = "${var.name}-https-alb-tg"
     Service     = "${var.name}"
     Environment = "${var.environment}"
   }
@@ -99,6 +103,18 @@ resource "aws_alb_listener" "main_http" {
    load_balancer_arn = "${aws_alb.main.arn}"
    port = "80"
    protocol = "HTTP"
+
+   default_action {
+     target_group_arn = "${aws_alb_target_group.main_http.arn}"
+     type = "forward"
+   }
+}
+
+resource "aws_alb_listener" "main_https" {
+   load_balancer_arn = "${aws_alb.main.arn}"
+   port = "443"
+   protocol = "HTTPS"
+   certificate_arn = "${var.tls_certificate_arn}"
 
    default_action {
      target_group_arn = "${aws_alb_target_group.main_http.arn}"
@@ -125,6 +141,7 @@ resource "aws_route53_record" "external" {
 /**
  * Outputs.
  */
+
 
 // The ELB ID.
 output "tg_arn" {
