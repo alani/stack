@@ -6,3 +6,5 @@ example/keys
 *.tfstate*
 *.swp
 *~
+
+.DS_Store
