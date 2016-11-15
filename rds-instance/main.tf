@@ -48,7 +48,7 @@ variable "engine" {
 
 variable "engine_version" {
   description = "The database engine version"
-  default    = "9.5.4"
+  default    = "9.6.1"
 }
 
 variable "username" {
@@ -96,7 +96,7 @@ variable "port" {
 
 variable "parameter_group_name" {
   description = "The name of the DB parameter group"
-  default     = "default.postgres9.5"
+  default     = "default.postgres9.6"
 }
 
 variable "multi_az" {
