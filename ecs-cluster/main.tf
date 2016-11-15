@@ -266,7 +266,7 @@ resource "aws_autoscaling_policy" "scale_down" {
 */
 
 resource "aws_cloudwatch_metric_alarm" "task_cpu_reservation_high" {
-  alarm_name          = "${var.name}-Task-CPUReservation-High"
+  alarm_name          = "${var.name}-${var.environment}-Task-CPUReservation-High"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUReservation"
@@ -290,7 +290,7 @@ resource "aws_cloudwatch_metric_alarm" "task_cpu_reservation_high" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "task_memory_reservation_high" {
-  alarm_name          = "${var.name}-Task-MemoryReservation-High"
+  alarm_name          = "${var.name}-${var.environment}-Task-MemoryReservation-High"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "MemoryReservation"
@@ -318,7 +318,7 @@ resource "aws_cloudwatch_metric_alarm" "task_memory_reservation_high" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "task_cpu_utilization_high" {
-  alarm_name          = "${var.name}-Task-CPUUtilization-High"
+  alarm_name          = "${var.name}-${var.environment}-Task-CPUUtilization-High"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
@@ -346,7 +346,7 @@ resource "aws_cloudwatch_metric_alarm" "task_cpu_utilization_high" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "task_memory_utilization_high" {
-  alarm_name          = "${var.name}-Task-MemoryUtilization-High"
+  alarm_name          = "${var.name}-${var.environment}-Task-MemoryUtilization-High"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "MemoryUtilization"
@@ -374,7 +374,7 @@ resource "aws_cloudwatch_metric_alarm" "task_memory_utilization_high" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "asg_cpuutilization_high" {
-  alarm_name          = "${var.name}-ASG-CPUUtilization-High"
+  alarm_name          = "${var.name}-${var.environment}-ASG-CPUUtilization-High"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
