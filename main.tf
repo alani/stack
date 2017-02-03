@@ -263,6 +263,11 @@ output "iam_role" {
   value = "${module.iam_role.arn}"
 }
 
+// ECS Service IAM role.
+output "iam_role_id" {
+  value = "${module.iam_role.id}"
+}
+
 // S3 bucket ID for ELB logs.
 output "log_bucket_id" {
   value = "${module.s3_logs.id}"

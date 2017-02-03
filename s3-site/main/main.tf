@@ -16,6 +16,14 @@
 ##    certificates must be requested in region us-east-1
 ################################################################################################################
 
+variable "name" {
+  description = "The name of the stack to use in security groups"
+}
+
+variable "environment" {
+  description = "The name of the environment for this stack"
+}
+
 variable "domain" {}
 variable "duplicate-content-penalty-secret" {}
 variable "deployer" {}
@@ -25,6 +33,14 @@ variable "routing_rules" {
 }
 variable "not-found-response-path" {
   default = "/404.html"
+}
+
+variable "is_accessible_by_instance" {
+  default = false
+}
+
+variable "instance_role" {
+  default = ""
 }
 
 variable "aws_profile_id" {}
@@ -85,6 +101,7 @@ resource "aws_iam_policy" "site_deployer_policy" {
   description = "Policy allowing to publish a new version of the website to the S3 bucket"
   policy = "${data.template_file.deployer_role_policy_file.rendered}"
 }
+
 /*
 resource "aws_iam_policy_attachment" "site-deployer-attach-user-policy" {
   provider = "aws"
@@ -92,6 +109,13 @@ resource "aws_iam_policy_attachment" "site-deployer-attach-user-policy" {
   users = ["${var.deployer}"]
   policy_arn = "${aws_iam_policy.site_deployer_policy.arn}"
 }*/
+
+resource "aws_iam_role_policy" "site_instance_role_policy" {
+  count = "${var.is_accessible_by_instance}"
+  name = "site.${replace("${var.domain}",".","-")}-instance-role-policy-${var.name}-${var.environment}"
+  role = "${var.instance_role}"
+  policy = "${data.template_file.deployer_role_policy_file.rendered}"
+}
 
 ################################################################################################################
 ## Create a Cloudfront distribution for the static website
