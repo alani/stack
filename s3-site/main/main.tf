@@ -43,6 +43,10 @@ variable "instance_role" {
   default = ""
 }
 
+variable "create_alias" {
+  default = false
+}
+
 variable "aws_profile_id" {}
 variable "aws_region" {}
 
@@ -176,10 +180,47 @@ resource "aws_cloudfront_distribution" "website_cdn" {
   aliases = ["${var.domain}"]
 }
 
+################################################################################################################
+## Create Route 53 zone and alias if necessary
+################################################################################################################
+
+resource "aws_route53_zone" "site" {
+  count = "${var.create_alias}"
+  name    = "${var.domain}"
+
+  tags {
+    Name        = "${var.domain}-dns-zone"
+    Environment = "${var.environment}"
+  }
+}
+
+resource "aws_route53_record" "site" {
+  count = "${var.create_alias}"
+  zone_id = "${aws_route53_zone.site.zone_id}"
+  name    = "${var.domain}"
+  type    = "A"
+
+  alias {
+    zone_id                = "${aws_cloudfront_distribution.website_cdn.hosted_zone_id}"
+    name                   = "${aws_cloudfront_distribution.website_cdn.domain_name}"
+    evaluate_target_health = false
+  }
+
+  # This is required in order to ensure A record is removed before 
+  # root DNS zone is removed
+  depends_on = ["aws_route53_zone.site"]
+}
+
+
 output "website_cdn_hostname" {
   value = "${aws_cloudfront_distribution.website_cdn.domain_name}"
 }
 
 output "website_cdn_zone_id" {
   value = "${aws_cloudfront_distribution.website_cdn.hosted_zone_id}"
+}
+
+// Zone NS
+output "name_servers" {
+  value = "${aws_route53_zone.site.name_servers}"
 }
